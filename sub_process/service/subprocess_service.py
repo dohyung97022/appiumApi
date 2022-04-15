@@ -14,7 +14,11 @@ def read(subprocess: Popen) -> str:
         for line in lines:
             result += line.decode('utf-8').strip() + '\n'
     else:
-        result = subprocess.stdout.readline().decode('utf-8').strip()
+        results = subprocess.stdout.readlines()
+        decoded_results = []
+        for result in results:
+            decoded_results.append(result.decode('utf-8').strip() + '\n')
+        result = ''.join(decoded_results)
     return result
 
 
