@@ -7,3 +7,4 @@ Implementation of phone automation api.
 * pip install SQLAlchemy
 * brew install mysql
 * pip install mysqlclient
+* pip install request
