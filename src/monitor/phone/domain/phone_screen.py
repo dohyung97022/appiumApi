@@ -1,0 +1,2 @@
+class PhoneScreen:
+    udid: str
