@@ -1,17 +1,15 @@
 <template>
-  <template v-for="phone_screen in phone_screens" v-bind:key="phone_screen.udid">
+  <template v-for="phone_screen in phone_screens" v-bind:key="phone_screen[0]">
 
     <div class="card mb-3" style="width: 400px;">
       <div class="row g-0">
-        <img class="col-md-4 rounded-start" :src="phone_screen.img" style="width: 150px;"/>
+        <img class="col-md-4 rounded-start" :src="phone_screen[1]" style="width: 150px;"/>
         <div class="col-md-7">
           <div class="card-body">
-            <h6 class="card-title">{{phone_screen.udid}}</h6>
+            <h6 class="card-title">{{ phone_screen[0] }}</h6>
             <div class="card-group card-mg-b">
-              <MonitorPhoneActionsDropdown class="card-mg-b"/>
-            <button class="btn btn-primary" type="button">action</button>
+              <router-link class="btn btn-primary" :to="'/automation/phoneAction?udid=' + phone_screen[0]">action</router-link>
             </div>
-            <router-link class="btn btn-secondary" :to="'/monitor/phone?udid=' + phone_screen.udid">control</router-link>
           </div>
         </div>
       </div>
@@ -24,13 +22,11 @@
 import { socket, connect } from "@/components/socket/model/Socket";
 import { defineComponent } from "vue";
 import PhoneScreen from "@/components/monitor/phone/model/PhoneScreen";
-import MonitorPhoneActionsDropdown from "@/components/monitor/phone/MonitorPhoneActionsDropdown.vue";
 
 export default defineComponent ({
   name: "MonitorPhoneScreens",
 
   components: {
-    MonitorPhoneActionsDropdown
   },
 
   props: {
@@ -38,7 +34,7 @@ export default defineComponent ({
 
   data() {
     return {
-      phone_screens: [] as Array<PhoneScreen>
+      phone_screens: new Map<string, string>() as Map<string, string>
     }
   },
 
@@ -57,8 +53,8 @@ export default defineComponent ({
 
     // 핸드폰 리스트 화면 소켓 수신
     phone_screens_connect() {
-      socket.on('phone_screens_connect', (data: Array<PhoneScreen>) => {
-        this.phone_screens = data
+      socket.on('phone_screens_connect', (data: PhoneScreen) => {
+        this.phone_screens.set(data.udid, data.img)
       })
     }
   }

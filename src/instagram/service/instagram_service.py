@@ -5,7 +5,7 @@ from selenium.webdriver.support.select import Select
 
 from src.gmailnator.service.gmailnator_instagram_service import get_instagram_code_from_email
 from src.instagram.domain.common.instagram_xpath import InstagramXpath
-from src.automation.domain.user import User
+from src.sql_alchemy.db_model.account import Account
 import time
 
 instagram_site = 'https://www.instagram.com'
@@ -16,7 +16,7 @@ def goto_instagram(driver: WebDriver):
     driver.get(instagram_site)
 
 
-def register_instagram(driver: WebDriver, user: User):
+def register_instagram(driver: WebDriver, user: Account):
     time.sleep(4)
     driver.find_element(AppiumBy.XPATH, InstagramXpath.REGISTER_BUTTON).click()
     time.sleep(4)
@@ -67,7 +67,7 @@ def register_instagram(driver: WebDriver, user: User):
     driver.find_element(AppiumBy.XPATH, InstagramXpath.REGISTER_NEXT).click()
 
 
-def login_instagram(driver: WebDriver, user: User):
+def login_instagram(driver: WebDriver, user: Account):
     time.sleep(3)
     driver.find_element(AppiumBy.XPATH, InstagramXpath.LOGIN_BUTTON).click()
     time.sleep(3)

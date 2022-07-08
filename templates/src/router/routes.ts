@@ -35,15 +35,6 @@ const headerRoutes: Array<HeaderRouteRecord> = [
   },
   {
     routeRecord: {
-      path: '/monitor/phone',
-      name: 'phone',
-      component: () => import('../views/monitor/MonitorPhoneView.vue')
-    },
-    isDisplayed: false,
-    isView: true
-  },
-  {
-    routeRecord: {
       path: '/automation',
       name: 'automation',
       component: homeView
@@ -53,9 +44,9 @@ const headerRoutes: Array<HeaderRouteRecord> = [
   },
   {
     routeRecord: {
-      path: '/automation/actions',
-      name: 'actions',
-      component: () => import('../views/automation/AutomationActionsView.vue')
+      path: '/automation/phoneAction',
+      name: 'phoneAction',
+      component: () => import('../views/automation/AutomationPhoneActionView.vue')
     },
     isDisplayed: true,
     isView: true

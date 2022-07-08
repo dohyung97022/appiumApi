@@ -12,9 +12,14 @@ class DesiredCapabilities:
     chromedriver_executable: str
     # 브라우저 명
     browser_name: str
+    # adb 포트번호
+    port: int
+    # 권한 오류 무시
+    ignoreHiddenApiPolicyError: True
 
-    def __init__(self, udid: str, platform_name='Android', browser_name='Chrome'):
+    def __init__(self, udid: str, port: int, platform_name='Android', browser_name='Chrome'):
         self.udid = udid
+        self.port = port
         self.platform_name = platform_name
         self.browser_name = browser_name
 

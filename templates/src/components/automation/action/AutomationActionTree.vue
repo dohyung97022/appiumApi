@@ -2,7 +2,7 @@
   <div class="row row-cols-2 justify-content-between">
     <!--     행동절차     -->
     <div class="col-3">
-      <Draggable :treeData="treeData" :ondragend="onDragEnd" idKey="id" parentIdKey="pid">
+      <Draggable :treeData="treeData" :ondragend="onDragEnd" v-on:drop-change="dropChange" idKey="id" parentIdKey="pid">
         <template v-slot="{ node, tree }">
 
           <template v-if="node.$level === 1">
@@ -10,15 +10,19 @@
               <h4 class="col-10">행동절차</h4>
 
               <div class="col-2 p-0 text-center">
-                <button class="btn btn-primary" v-on:click="save_action_tree(node, tree)">
+                <button class="btn btn-primary" v-on:click="save_action_tree(tree)">
                   <font-awesome-icon icon="floppy-disk"/>
                 </button>
               </div>
             </div>
 
             <div class="mb-3 d-flex justify-content-between row">
-              <div class="col-10">
-                <input type="text" class="form-control" v-model="addActionName">
+              <div class="col-10" style="position: relative">
+                <input @focus="isActionSearchFocus=true" @blur="isActionSearchFocus=false"
+                    type="text" class="form-control" v-model="addActionName">
+                <div v-if="isActionSearchFocus" class="list-group" style="position: absolute; z-index: 1; width: 100%; top: 100%">
+                  <button v-bind:key="actionRow.action_seq" v-for="actionRow in actionSearchRowList" type="button" class="list-group-item list-group-item-action">{{actionRow.name}}</button>
+                </div>
               </div>
               <div class="col-2 p-0 text-center">
                 <button class="btn btn-primary" v-on:click="add_action(tree)">
@@ -31,7 +35,7 @@
 
           <div class="mb-3 d-flex justify-content-between">
             <h5 class="mb-auto mt-auto" v-bind:style="[node.isSelected ? {'color':'red'} : '']"
-                v-on:click="select_action(node, tree)"> • {{ node.text }}</h5>
+                v-on:click="select_action(node, tree);"> • {{ node.text }}</h5>
 
             <button v-bind:style="[node.$level !== 1 ? '' : {'visibility':'hidden'}]"
                     class="btn btn-light" v-on:click="remove_action(node, tree)">
@@ -142,13 +146,14 @@
 
 <script>
 import {defineComponent} from "vue";
-import Action from "@/components/automation/action/model/Action";
+import Action from "@/model/Action";
 import axios from "axios";
 import {Draggable} from '@he-tree/vue3'
 import ActionNode from "@/components/automation/action/model/ActionNode";
-import Macro from "@/components/automation/action/model/Macro";
+import Macro from "@/model/Macro";
 import draggable from "vuedraggable";
 import MacroRow from "@/components/automation/action/model/MacroRow";
+import ActionRow from "@/components/automation/action/model/ActionRow";
 
 export default defineComponent({
   name: "AutomationActionTree",
@@ -163,8 +168,17 @@ export default defineComponent({
       addActionName: '',
       selectedActionNode: null,
       treeData: [],
+      isActionSearchFocus: false,
+      actionSearchRowList: [
+          new ActionRow(new Action('test'), 1),
+          new ActionRow(new Action('test2'), 2)
+      ],
       macroRowList: [],
-      macroRowId: 0
+      macroRowId: 0,
+      getActionsParameters: {
+        query: 'test1',
+        is_like: false
+      }
     }
   },
 
@@ -179,10 +193,14 @@ export default defineComponent({
      */
     get_action() {
       axios.get('http://127.0.0.1:8082/api/automation/action/' + this.queryActionSeq)
-          .then(res => {
-            this.treeData = [new ActionNode(res.data)]
-          })
-          .catch(error => (console.log(error)))
+           .then(res => {this.treeData = [new ActionNode(res.data)];})
+           .catch(error => (console.log(error)))
+    },
+
+    get_actions() {
+      axios.get('http://127.0.0.1:8082/api/automation/actions', {params : this.getActionsParameters})
+           .then(res => {console.log(res)})
+           .catch(err => {console.log(err)})
     },
 
     select_action(node, tree) {
@@ -205,7 +223,7 @@ export default defineComponent({
     },
 
     save_action_tree(tree) {
-      const action = Action.ofActionNode(tree)
+      const action = Action.ofActionNode(tree.rootNode.$children[0])
 
       axios.post('http://127.0.0.1:8082/api/automation/action/action', action)
            .then(res => {console.log(res)})
@@ -268,6 +286,10 @@ export default defineComponent({
       }
 
       return isNotMinLevel(1, store)
+    },
+
+    dropChange(store) {
+      this.save_action_tree(store.targetTree);
     }
   }
 })

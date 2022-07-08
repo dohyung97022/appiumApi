@@ -3,9 +3,12 @@ from src.sub_process.domain.adb.device_info import DeviceInfo
 from src.sub_process.service.subprocess_service import start, read, kill
 import re
 
+appium_port: int = 4000
+
 
 # 연결된 모든 기기의 정보 반환
 def get_all_adb_device_info() -> list[DeviceInfo]:
+    global appium_port
     # subprocess 시작
     popen = start(AdbCommands.get_all_devices)
     # subprocess 읽기
@@ -17,8 +20,9 @@ def get_all_adb_device_info() -> list[DeviceInfo]:
     device_infos: list[DeviceInfo] = []
     for i in range(len(device_udids)):
         width, height = get_device_size(device_udids[i])
-        device_info = DeviceInfo(device_udids[i], device_states[i], width, height)
+        device_info = DeviceInfo(device_udids[i], device_states[i], appium_port, width, height)
         device_infos.append(device_info)
+        appium_port = appium_port + 1
     # subprocess 연결 해제
     kill(popen)
     # 반환

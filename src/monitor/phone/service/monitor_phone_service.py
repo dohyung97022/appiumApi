@@ -1,11 +1,11 @@
 from src.sub_process.service.subprocess_adb_service import touch_screen
-from src.config import current_devices
+from src import config
 
 
 def phone_touch(req):
 
     # udid 로 디바이스 찾기
-    device = current_devices.udid_to_devices.get(req['udid'])
+    device = config.udid_to_device.get(req['udid'])
 
     # 터치된 위치의 비율
     x_portion = req['touch_x'] / req['touch_w']

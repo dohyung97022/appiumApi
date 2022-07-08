@@ -1,4 +1,4 @@
-import Macro from "@/components/automation/action/model/Macro";
+import Macro from "@/model/Macro";
 
 export class MacroRow {
     id: number;

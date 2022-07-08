@@ -5,7 +5,12 @@ from flask import jsonify
 class ResponseEntity:
 
     @classmethod
-    def build(cls, data):
+    def build(cls, **kwargs):
+
+        data = kwargs['data']
+
+        if data is None:
+            return {'code': 200}
 
         tmp = []
         if isinstance(data, list):
@@ -17,6 +22,6 @@ class ResponseEntity:
 
         response = jsonify(data)
 
-        # response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Origin', '*')
 
         return response

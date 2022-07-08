@@ -10,12 +10,9 @@ import PhoneScreen from "@/components/monitor/phone/model/PhoneScreen";
 export default defineComponent ({
   name: "MonitorPhoneScreen",
 
-  props: {
-    udid: String
-  },
-
   data() {
     return {
+      udid: this.$route.query.udid as string,
       phone_screen: null as PhoneScreen|null
     }
   },

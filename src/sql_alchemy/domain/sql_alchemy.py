@@ -22,10 +22,4 @@ Base = declarative_base()
 
 # db 에 생성되지 않은 객체들이 있다면 생성
 def db_setup():
-    import src.automation.domain.action
-    import src.automation.domain.action_action_association
-    import src.automation.domain.user
-    import src.automation.domain.user_action
-    import src.automation.domain.user_action_log
-    import src.automation.domain.macro
     Base.metadata.create_all(engine)

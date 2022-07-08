@@ -4,14 +4,14 @@ from src.sb.domain.common.sb_xpath import SbXpath
 from src.dot_env.domain.sb import Sb
 import time
 
-from src.automation.domain.user import User
+from src.sql_alchemy.db_model.account import Account
 
 
 def goto_sb(driver: WebDriver):
     driver.get(Sb.website)
 
 
-def register_sb(driver: WebDriver, user: User):
+def register_sb(driver: WebDriver, user: Account):
     time.sleep(3)
     driver.find_element(AppiumBy.XPATH, SbXpath.BASE_MENU).click()
     time.sleep(3)
@@ -32,7 +32,7 @@ def register_sb(driver: WebDriver, user: User):
     driver.find_element(AppiumBy.XPATH, SbXpath.REGISTER_SUBMIT).click()
 
 
-def login_sb(driver: WebDriver, user: User):
+def login_sb(driver: WebDriver, user: Account):
     time.sleep(3)
     driver.find_element(AppiumBy.XPATH, SbXpath.BASE_MENU).click()
     time.sleep(3)

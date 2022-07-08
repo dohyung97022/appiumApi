@@ -1,15 +1,14 @@
-import src.setup  # 기본 setup
-
+from src import setup
 from src.flask_socket_io.domain.flask_socket_io import socketio, app
 from src.sb.service import sb_service
-from src.automation.service import user_service
+from src.automation.account.service import user_service
 from src.appium_api.service import appium_device_service
-from src.config import current_devices
+from src import config
 
 
 def example_appium():
     # 디바이스
-    device = list(current_devices.udid_to_devices.values())[0]
+    device = list(config.udid_to_device.values())[0]
 
     # 크롬 / 앱 드라이버 가져오기
     chrome_driver = device.web_driver
@@ -32,4 +31,5 @@ def example_appium():
 
 
 if __name__ == '__main__':
+    setup.configure()
     socketio.run(app, host='127.0.0.1', port=8082)
