@@ -11,5 +11,5 @@ class PhoneActionAssociation(Base, SerializerMixin):
     udid: str = Column(String(30), ForeignKey('phone.udid'), comment='핸드폰 udid')
     action_seq: int = Column(Integer, ForeignKey('action.action_seq'), comment='행동 일렬번호')
 
-    action = relationship('Action', foreign_keys=action_seq)
-    phone = relationship('Phone', foreign_keys='Phone.udid')
+    # action = relationship('Action', foreign_keys=action_seq)
+    # phone = relationship('Phone', foreign_keys='Phone.udid')

@@ -4,7 +4,7 @@ import random
 from faker import Faker
 
 from src.sql_alchemy.domain.sql_alchemy import session
-from src.automation.common.faker_locale import FakerLocale
+from src.automation.account.common.faker_locale import FakerLocale
 from src.sql_alchemy.db_model.account import Account
 
 

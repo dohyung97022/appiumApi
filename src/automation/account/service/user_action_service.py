@@ -1,5 +1,5 @@
 from src.sql_alchemy.domain.sql_alchemy import session
-from src.automation.common.epoch import epoch_datetime
+from src.automation.account.common.epoch import epoch_datetime
 from src.sql_alchemy.db_model.account import Account
 from src.automation.domain.user_action import AccountAction
 from datetime import datetime

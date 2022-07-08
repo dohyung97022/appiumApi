@@ -96,8 +96,8 @@ export default defineComponent({
            .catch(err => {console.log(err)})
     },
 
-    save_phone_actions() {
-      axios.post('http://127.0.0.1:8082/api/automation/action/action', null)
+    save_phone_action_row_list() {
+      axios.post('http://127.0.0.1:8082/api/automation/action', null)
            .then(res => {console.log(res)})
            .catch(error => (console.log(error)))
     },
