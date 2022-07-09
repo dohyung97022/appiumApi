@@ -15,6 +15,11 @@ class Action(Base, SerializerMixin):
     child_action_associations = relationship('ActionActionAssociation', foreign_keys='ActionActionAssociation.parent_action_seq', order_by="asc(ActionActionAssociation.association_order)")
     parent_action_associations = relationship('ActionActionAssociation', foreign_keys='ActionActionAssociation.child_action_seq', lazy="noload")
 
+    def apply_json(self, action_json: dict):
+        self.action_seq = action_json['action_seq']
+        self.name = action_json['name']
+        self.is_root = action_json['is_root']
+
     def get_child_action_association_of_seq(self, child_action_seq: int):
         if child_action_seq is None:
             return None

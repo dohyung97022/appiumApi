@@ -10,9 +10,11 @@
       </div>
     </div>
     <div class="row text-center">
-      <div class="col-4 m-auto">name</div>
-      <div class="col-3 m-auto">run</div>
-      <div class="col-4 m-auto">edit</div>
+      <div class="col-2 m-auto">name</div>
+      <div class="col-2 m-auto">run</div>
+      <div class="col-2 m-auto">edit</div>
+      <div class="col-3 m-auto">loopType</div>
+      <div class="col-2 m-auto">loop</div>
       <div class="col-1">
         <button class="btn btn-primary" v-on:click="add_phone_action_row">
           <font-awesome-icon icon="plus"/>
@@ -22,27 +24,40 @@
 
     <hr/>
 
-    <draggable :list="actionRowList" item-key="id">
+    <draggable :list="phoneActionRowList" item-key="id">
       <template #item="{ element, index }">
-        <div class="row text-center mb-3">
+        <div class="row text-center">
 
           <!--        name        -->
-          <div class="col-4">
-            <input type="text" class="form-control" v-model="element.name">
+          <div class="col-2">
+            <input type="text" class="form-control" v-model="element.phoneActionAssociation.action.name">
           </div>
 
           <!--        run        -->
-          <div class="dropdown col-3">
+          <div class="dropdown col-2">
             <button class="btn btn-light" v-on:click="test">
               <font-awesome-icon icon="play"/>
             </button>
           </div>
 
           <!--        edit        -->
-          <div class="col-4">
+          <div class="col-2">
             <button class="btn btn-light" v-on:click="test">
               <font-awesome-icon icon="pen-to-square"/>
             </button>
+          </div>
+
+          <!--        loopType        -->
+          <div class="dropdown col-3">
+            <select class="form-select mb-3" aria-label=".form-select-lg" v-model="element.phoneActionAssociation.loop_type">
+              <option value="DAILY">DAILY</option>
+              <option value="SINGLE_USE">SINGLE_USE</option>
+            </select>
+          </div>
+
+          <!--        loop        -->
+          <div class="col-2">
+            <input type="number" class="form-control" v-model="element.phoneActionAssociation.loop">
           </div>
 
           <!--       delete        -->
@@ -65,8 +80,9 @@
 import {defineComponent} from "vue";
 import axios from "axios";
 import draggable from "vuedraggable";
-import Action from "@/model/Action";
-import ActionRow from "@/components/automation/phoneAction/model/ActionRow";
+import PhoneActionRow from "@/components/automation/phoneAction/model/PhoneActionRow";
+import Phone from "@/model/Phone";
+import PhoneActionAssociation from "@/model/PhoneActionAssociation";
 
 export default defineComponent({
   name: "AutomationPhoneActionList",
@@ -77,41 +93,58 @@ export default defineComponent({
 
   data() {
     return {
+      udid: this.$route.query.udid,
       actionRowId : 0,
-      actionRowList: [],
-      getActionsParameters: {
-        udid: 'test1'
+      phoneActionRowList: [],
+      getPhoneActionsParameters: {
+        udid: ''
+      },
+      savePhoneActionsParameters: {
+        udid: '',
+        phoneActionAssociation: []
       }
     }
+  },
+
+  async created() {
+    this.get_phone_actions()
   },
 
   methods: {
 
     /**
-     * action
+     * phone action
      */
     get_phone_actions() {
-      axios.get('http://127.0.0.1:8082/api/automation/actions', {params : this.getActionsParameters})
-           .then(res => {console.log(res)})
+      this.getPhoneActionsParameters.udid = this.udid
+
+      axios.get('http://127.0.0.1:8082/api/automation/phone/actions', {params : this.getPhoneActionsParameters})
+           .then(res => {
+             this.phoneActionRowList = new Phone(res.data).action_associations
+                 .map(association => new PhoneActionRow(this.actionRowId++, association))
+           })
            .catch(err => {console.log(err)})
     },
 
-    save_phone_action_row_list() {
-      axios.post('http://127.0.0.1:8082/api/automation/action', null)
-           .then(res => {console.log(res)})
+    save_phone_actions() {
+      this.savePhoneActionsParameters.udid = this.udid
+      this.savePhoneActionsParameters.phoneActionAssociation = this.phoneActionRowList.map(phoneActionRow => phoneActionRow.phoneActionAssociation)
+
+      axios.post('http://127.0.0.1:8082/api/automation/phone/actions', this.savePhoneActionsParameters)
+           .then(res => {this.get_phone_actions(); alert('저장되었습니다.')})
            .catch(error => (console.log(error)))
     },
 
     add_phone_action_row() {
-      const newAction = new Action('');
-      const newActionRow = new ActionRow(newAction, this.actionRowId)
+      const phoneActionAssociation = new PhoneActionAssociation();
+      phoneActionAssociation.action.is_root = true
 
-      this.actionRowList.push(newActionRow);
+      this.phoneActionRowList.push(new PhoneActionRow(this.actionRowId, phoneActionAssociation));
       this.actionRowId++
     },
 
     remove_phone_action_row(index) {
-      this.actionRowList.splice(index, 1);
+      this.phoneActionRowList.splice(index, 1);
     },
 
     test() {

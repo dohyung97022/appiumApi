@@ -17,7 +17,7 @@ export default defineComponent ({
   methods: {
     saveAllMonitorPhones() {
       axios.post('http://127.0.0.1:8082/api/automation/phones')
-          .then(res => {console.log(res)})
+          .then(res => {alert('저장되었습니다.')})
           .catch(err => {console.log(err)})
     }
   }

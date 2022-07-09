@@ -170,8 +170,8 @@ export default defineComponent({
       treeData: [],
       isActionSearchFocus: false,
       actionSearchRowList: [
-          new ActionRow(new Action('test'), 1),
-          new ActionRow(new Action('test2'), 2)
+          new ActionRow(new Action({name : 'test1'}), 1),
+          new ActionRow(new Action({name : 'test2'}), 2)
       ],
       macroRowList: [],
       macroRowId: 0,
@@ -213,7 +213,7 @@ export default defineComponent({
     },
 
     add_action(tree) {
-      const node = new ActionNode(new Action(this.addActionName))
+      const node = new ActionNode(new Action({name: this.addActionName}))
       tree.addNode(node, tree.nodes[0].$id)
       this.addActionName = ''
     },
@@ -226,7 +226,7 @@ export default defineComponent({
       const action = Action.ofActionNode(tree.rootNode.$children[0])
 
       axios.post('http://127.0.0.1:8082/api/automation/action/action', action)
-           .then(res => {console.log(res)})
+           .then(res => {this.get_action(); alert('저장되었습니다.')})
            .catch(error => (console.log(error)))
     },
 
@@ -270,7 +270,7 @@ export default defineComponent({
       action.macros = this.convert_selected_to_macros()
 
       axios.post('http://127.0.0.1:8082/api/automation/action/macro', action)
-           .then(res => {console.log(res)})
+           .then(res => {alert('저장되었습니다.')})
            .catch(error => (console.log(error)))
     },
 

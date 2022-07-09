@@ -7,12 +7,14 @@ export default class Action {
     name: string;
     macros: Macro[];
     child_action_associations: ActionActionAssociation[];
+    is_root: boolean;
 
-    constructor(name: string) {
-        this.action_seq = null;
-        this.name = name;
-        this.macros = [];
-        this.child_action_associations = [];
+    constructor(action: Partial<Action> = {}) {
+        this.action_seq = action.action_seq ?? null;
+        this.name = action.name ?? '';
+        this.macros = action.macros ?? [];
+        this.child_action_associations = action.child_action_associations ?? [];
+        this.is_root = action.is_root ?? false;
     }
 
     static ofActionNode(actionNode: ActionNode): Action {
