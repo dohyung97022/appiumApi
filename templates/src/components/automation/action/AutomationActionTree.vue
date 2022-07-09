@@ -164,7 +164,7 @@ export default defineComponent({
 
   data() {
     return {
-      queryActionSeq: 1,
+      queryActionSeq: this.$route.query.actionSeq,
       addActionName: '',
       selectedActionNode: null,
       treeData: [],

@@ -42,9 +42,9 @@
 
           <!--        edit        -->
           <div class="col-2">
-            <button class="btn btn-light" v-on:click="test">
-              <font-awesome-icon icon="pen-to-square"/>
-            </button>
+              <button @click="edit_action(element)" class="btn btn-light">
+                <font-awesome-icon icon="pen-to-square"/>
+              </button>
           </div>
 
           <!--        loopType        -->
@@ -145,6 +145,14 @@ export default defineComponent({
 
     remove_phone_action_row(index) {
       this.phoneActionRowList.splice(index, 1);
+    },
+
+    edit_action(phoneActionRow) {
+      if (phoneActionRow.phoneActionAssociation.action_seq === null) {
+        alert('저장 이후에 편집이 가능합니다.')
+        return;
+      }
+      this.$router.push('/automation/action?actionSeq=' + phoneActionRow.phoneActionAssociation.action_seq)
     },
 
     test() {
