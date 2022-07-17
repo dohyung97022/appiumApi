@@ -1,3 +1,5 @@
+from src.appium_api.service import appium_device_run_service
+from src.config import udid_to_device
 from src.sql_alchemy.db_model.action import Action
 from src.sql_alchemy.db_model.macro import Macro
 from src.sql_alchemy.domain.sql_alchemy import session
@@ -38,3 +40,20 @@ def apply_action_macro_json(action: Action, action_json: dict):
     req_macro_seqs = action.get_macro_seqs_from_action_json(action_json)
     for macro in action.get_macros_not_in(req_macro_seqs):
         action.macros.remove(macro)
+
+
+# 행동 매크로 실행
+def run_action_macro(req_action_macro_json):
+
+    # 매크로
+    run_macro = Macro()
+    run_macro.apply_json(req_action_macro_json['macro'])
+
+    # 디바이스
+    device = udid_to_device[req_action_macro_json['udid']]
+
+    # 디바이스 driver 연결
+    appium_device_run_service.test_and_reconnect_driver_session(device)
+
+    # 매크로 실행
+    appium_device_run_service.run_macro(device, run_macro)

@@ -1,5 +1,5 @@
 <template>
-  <div class="container-xxl">
+  <div>
     <ViewTitle title="자동화 행동절차" sub-title="행동절차와 매크로를 구성합니다."/>
     <AutomationActionTree/>
   </div>

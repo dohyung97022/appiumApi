@@ -15,7 +15,7 @@ class DesiredCapabilities:
     # adb 포트번호
     port: int
     # 권한 오류 무시
-    ignoreHiddenApiPolicyError: True
+    ignore_hidden_api_policy_error: True
 
     def __init__(self, udid: str, port: int, platform_name='Android', browser_name='Chrome'):
         self.udid = udid

@@ -17,8 +17,8 @@ appium_path: str = '/wd/hub'
 # chrome, app 동시 접속은 안된다.
 def connect_device(device_info: DeviceInfo) -> Device:
     app_driver = get_app_driver(device_info)
-    # chrome_driver = get_chrome_driver(device_info)
-    return Device(device_info, app_driver, None)
+    chrome_driver = get_chrome_driver(device_info)
+    return Device(device_info, app_driver, chrome_driver)
 
 
 # 요청 값을 통해 driver 를 추출
@@ -47,8 +47,3 @@ def get_app_driver(device_info: DeviceInfo) -> WebDriver:
 # 화면 스크린샷 저장
 def get_screenshot(app_driver: WebDriver):
     app_driver.save_screenshot(getcwd() + '/src/appium_api/screenshots/screenshot.png')
-
-
-# 화면 스크린샷 base64 출력
-def get_screenshot_base64(app_driver: WebDriver):
-    return app_driver.get_screenshot_as_base64()

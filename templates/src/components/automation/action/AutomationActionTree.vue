@@ -1,7 +1,7 @@
 <template>
   <div class="row row-cols-2 justify-content-between">
     <!--     행동절차     -->
-    <div class="col-3">
+    <div class="col-2">
       <Draggable :treeData="treeData" :ondragend="onDragEnd" v-on:drop-change="dropChange" idKey="id" parentIdKey="pid">
         <template v-slot="{ node, tree }">
 
@@ -50,7 +50,7 @@
 
     </div>
     <!--     매크로 리스트     -->
-    <div class="col-8">
+    <div class="col-10">
       <div class="row text-center mb-1">
         <h4 class="col-11 text-start">매크로 리스트</h4>
         <div class="col-1">
@@ -61,9 +61,12 @@
       </div>
       <div class="row text-center">
         <div class="col-2 m-auto">name</div>
-        <div class="col-2 m-auto">macroType</div>
-        <div class="col-4 m-auto">element</div>
+        <div class="col-1 m-auto">driverType</div>
+        <div class="col-1 m-auto">macroType</div>
+        <div class="col-2 m-auto">element</div>
+        <div class="col-1 m-auto">variable</div>
         <div class="col-1 m-auto">index</div>
+        <div class="col-1 m-auto">operator</div>
         <div class="col-2 m-auto">wait</div>
         <div class="col-1">
           <button class="btn btn-primary" v-on:click="add_macro">
@@ -80,21 +83,35 @@
 
             <!--        title        -->
             <div class="col-2">
-              <input type="text" class="form-control" v-model="element.name">
+              <div class="input-group">
+                <button type="button" class="btn btn-outline-secondary" v-on:click="run_macro(element)">
+                  <font-awesome-icon icon="play"/>
+                </button>
+                <input type="text" class="form-control" v-model="element.name">
+              </div>
+            </div>
+
+            <!--        driverType        -->
+            <div class="dropdown col-1">
+              <select class="form-select mb-3" aria-label=".form-select-lg" v-model="element.macro.driver_type">
+                <option value="APP">APP</option>
+                <option value="WEB">WEB</option>
+              </select>
             </div>
 
             <!--        macroType        -->
-            <div class="dropdown col-2">
+            <div class="dropdown col-1">
               <select class="form-select mb-3" aria-label=".form-select-lg" v-model="element.macro.macro_type">
                 <option value="CLICK">CLICK</option>
                 <option value="DRAG">DRAG</option>
                 <option value="SCROLL">SCROLL</option>
                 <option value="RUN">RUN</option>
+                <option value="TYPE">TYPE</option>
               </select>
             </div>
 
             <!--        element        -->
-            <div class="col-4">
+            <div class="col-2">
               <div class="input-group w-100">
 
                 <select class="form-select" style="width: 40%;" aria-label=".form-select-lg"
@@ -113,9 +130,23 @@
               </div>
             </div>
 
+            <!--        variable        -->
+            <div class="col-1">
+              <input type="text" class="form-control" v-model="element.macro.variable">
+            </div>
+
             <!--        index        -->
             <div class="col-1">
               <input type="number" class="form-control text-center" v-model="element.macro.macro_index">
+            </div>
+
+            <!--        operator        -->
+            <div class="dropdown col-1">
+              <select class="form-select mb-3" aria-label=".form-select-lg" v-model="element.macro.macro_operator">
+                <option value="NONE">NONE</option>
+                <option value="OR">OR</option>
+                <option value="TRY">TRY</option>
+              </select>
             </div>
 
             <!--        wait        -->
@@ -164,6 +195,7 @@ export default defineComponent({
 
   data() {
     return {
+      udid: this.$route.query.udid,
       queryActionSeq: this.$route.query.actionSeq,
       addActionName: '',
       selectedActionNode: null,
@@ -178,6 +210,10 @@ export default defineComponent({
       getActionsParameters: {
         query: 'test1',
         is_like: false
+      },
+      runMacroParameters: {
+        udid: '',
+        macro: null
       }
     }
   },
@@ -270,8 +306,18 @@ export default defineComponent({
       action.macros = this.convert_selected_to_macros()
 
       axios.post('http://127.0.0.1:8082/api/automation/action/macro', action)
-           .then(res => {alert('저장되었습니다.')})
+           .then(res => {alert('저장되었습니다.'); this.get_action();})
            .catch(error => (console.log(error)))
+    },
+
+    run_macro(macro_row) {
+      this.runMacroParameters.macro = macro_row.macro
+      this.runMacroParameters.udid = this.udid
+
+      axios.post('http://127.0.0.1:8082/api/automation/action/macro/run', this.runMacroParameters)
+          .then(res => {console.log(res)})
+          .catch(error => (console.log(error)))
+
     },
 
     /**

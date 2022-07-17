@@ -7,7 +7,7 @@ from sqlalchemy_serializer import SerializerMixin
 class Action(Base, SerializerMixin):
     __tablename__ = 'action'
     action_seq: int = Column(Integer, primary_key=True, comment='행동 일렬번호')
-    name: str = Column(String(15), index=True, comment='행동 이름')
+    name: str = Column(String(100), index=True, comment='행동 이름')
     is_root: bool = Column(Boolean, comment='행동의 주체 여부')
 
     macros = relationship("Macro", back_populates="action", order_by="Macro.macro_order")

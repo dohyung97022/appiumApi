@@ -48,7 +48,7 @@ const headerRoutes: Array<HeaderRouteRecord> = [
       name: 'phoneAction',
       component: () => import('../views/automation/AutomationPhoneActionView.vue')
     },
-    isDisplayed: true,
+    isDisplayed: false,
     isView: true
   },
   {
@@ -57,14 +57,14 @@ const headerRoutes: Array<HeaderRouteRecord> = [
       name: 'action',
       component: () => import('../views/automation/AutomationActionView.vue')
     },
-    isDisplayed: true,
+    isDisplayed: false,
     isView: true
   },
   {
     routeRecord: {
-      path: '/automation/users',
-      name: 'users',
-      component: () => import('../views/automation/AutomationActionView.vue')
+      path: '/automation/agentJob',
+      name: 'agentJob',
+      component: () => import('../views/automation/AutomationAgentJobView.vue')
     },
     isDisplayed: true,
     isView: true

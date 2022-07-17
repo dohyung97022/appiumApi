@@ -1,4 +1,4 @@
-from src.automation.phone.model.GetPhoneActionsReq import GetPhoneActionsReq
+from src.automation.phone.model.get_phone_actions_req import GetPhoneActionsReq
 from src.sql_alchemy.db_model.action import Action
 from src.sql_alchemy.db_model.phone import Phone
 from src.sql_alchemy.db_model.phone_action_association import PhoneActionAssociation
@@ -45,6 +45,7 @@ def update_phone_actions(req_json: dict):
 
         # 수정
         phone_action_association.apply_json(phone_action_association_json)
+        phone_action_association.current_loop = phone_action_association.loop
         phone_action_association.action.apply_json(phone_action_association_json['action'])
 
     # 커밋

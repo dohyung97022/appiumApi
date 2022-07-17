@@ -16,7 +16,8 @@ class PhoneActionAssociation(Base, SerializerMixin):
 
     udid: str = Column(String(30), ForeignKey('phone.udid'), comment='핸드폰 udid')
     action_seq: int = Column(Integer, ForeignKey('action.action_seq'), comment='행동 일렬번호')
-    loop: int = Column(Integer, comment='루프가 횟수')
+    loop: int = Column(Integer, comment='루프 횟수')
+    current_loop: int = Column(Integer, comment='현제 남은 루프 횟수')
     loop_type = Column(Enum(LoopType), comment='루프의 타입')
 
     phone = relationship('Phone', foreign_keys=udid, lazy="noload")

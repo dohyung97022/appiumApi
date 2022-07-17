@@ -18,9 +18,9 @@ class Account(Base):
     birthdate: datetime
     address: str
 
-    def __init__(self, user_email: str, user_pw: str, udid: str, site: str, faker_profile: dict):
-        self.user_email = user_email
-        self.user_pw = user_pw
+    def __init__(self, account_email: str, account_pw: str, udid: str, site: str, faker_profile: dict):
+        self.account_email = account_email
+        self.account_pw = account_pw
         self.udid = udid
         self.site = site
 

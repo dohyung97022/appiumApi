@@ -1,18 +1,20 @@
-from src.appium_api.service.appium_device_service import get_screenshot_base64, get_app_driver
+from src.automation.agent_job.service import agent_job_service
 from src.flask_socket_io.domain.flask_socket_io import socketio
+from src.sub_process.service import subprocess_adb_service
 from src.utils.img_service import resize_base_64
-from src import config
 
 
 # 모든 디바이스 화면 받기
-def monitor_phone_socket_job(devices):
+def monitor_phone_socket_job(device):
 
     # udid
-    udid = devices.device_info.udid
+    udid = device.device_info.udid
     try:
 
         # 스크린샷
-        screenshot = get_screenshot_base64(devices.app_driver)
+        screenshot = subprocess_adb_service.get_screen_base64(device.device_info)
+        big_screenshot = resize_base_64(screenshot, 300, 500)
+        small_screenshot = resize_base_64(screenshot, 150, 250)
 
         # 단일 화면 전송
         socketio.emit(
@@ -20,7 +22,7 @@ def monitor_phone_socket_job(devices):
             {
                 'img':
                     'data:image/png;base64,' +
-                    resize_base_64(screenshot, 300, 500),
+                    big_screenshot,
                 'udid': udid
             },
             room=udid
@@ -32,13 +34,29 @@ def monitor_phone_socket_job(devices):
             {
                 'img':
                     'data:image/png;base64,' +
-                    resize_base_64(screenshot, 150, 250),
+                    small_screenshot,
                 'udid': udid
             },
             room='phone_screens'
         )
 
-    except:
-        print('phone_screen_connect exception')
-        config.udid_to_device[udid].app_driver = get_app_driver(
-            config.udid_to_device[udid].device_info)
+        # agent 화면 전송
+        agent = agent_job_service.get_assigned_agent_of_udid(udid)
+
+        if agent is not None:
+            if agent.is_job_finished:
+                big_screenshot = ''
+
+            socketio.emit(
+                'phone_screen_connect',
+                {
+                    'img':
+                        'data:image/png;base64,' +
+                        big_screenshot,
+                    'udid': udid
+                },
+                room=agent.agent_email
+            )
+
+    except Exception as e:
+        print(e)

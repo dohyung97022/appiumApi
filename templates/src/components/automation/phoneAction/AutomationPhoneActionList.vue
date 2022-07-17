@@ -35,7 +35,7 @@
 
           <!--        run        -->
           <div class="dropdown col-2">
-            <button class="btn btn-light" v-on:click="test">
+            <button class="btn btn-light" v-on:click="run_action(element)">
               <font-awesome-icon icon="play"/>
             </button>
           </div>
@@ -102,6 +102,10 @@ export default defineComponent({
       savePhoneActionsParameters: {
         udid: '',
         phoneActionAssociation: []
+      },
+      runPhoneActionParameters: {
+        udid: '',
+        actionSeq: null
       }
     }
   },
@@ -131,7 +135,7 @@ export default defineComponent({
       this.savePhoneActionsParameters.phoneActionAssociation = this.phoneActionRowList.map(phoneActionRow => phoneActionRow.phoneActionAssociation)
 
       axios.post('http://127.0.0.1:8082/api/automation/phone/actions', this.savePhoneActionsParameters)
-           .then(res => {this.get_phone_actions(); alert('저장되었습니다.')})
+           .then(res => {this.get_phone_actions(); alert('저장되었습니다.'); console.log(res);})
            .catch(error => (console.log(error)))
     },
 
@@ -152,7 +156,21 @@ export default defineComponent({
         alert('저장 이후에 편집이 가능합니다.')
         return;
       }
-      this.$router.push('/automation/action?actionSeq=' + phoneActionRow.phoneActionAssociation.action_seq)
+      this.$router.push('/automation/action?actionSeq=' + phoneActionRow.phoneActionAssociation.action_seq + '&udid=' + this.udid)
+    },
+
+    run_action(phoneActionRow) {
+      if (phoneActionRow.phoneActionAssociation.action_seq === null) {
+        alert('저장 이후에 실행이 가능합니다.')
+        return;
+      }
+
+      this.runPhoneActionParameters.actionSeq = phoneActionRow.phoneActionAssociation.action_seq
+      this.runPhoneActionParameters.udid = this.udid
+
+      axios.get('http://127.0.0.1:8082/api/automation/phone/action/appium/run', {params : this.runPhoneActionParameters})
+          .then(res => {console.log(res)})
+          .catch(error => (console.log(error)))
     },
 
     test() {

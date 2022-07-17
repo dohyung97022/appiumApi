@@ -62,5 +62,28 @@ def get_device_size(device_udid: str) -> tuple[int, int]:
 def touch_screen(device_info: DeviceInfo, x: int, y: int):
     # subprocess 시작
     popen = start(AdbCommands.touch_screen(device_info, x, y))
-    info = read(popen)
+    read(popen)
+    kill(popen)
+
+
+# 디바이스 스크린샷 base64
+def get_screen_base64(device_info: DeviceInfo):
+    popen = start(AdbCommands.get_screen_base64(device_info))
+    info = popen.communicate()[0]
+    kill(popen)
+
+    return info
+
+
+# 디바이스 wakeup
+def wakeup(device_info: DeviceInfo):
+    popen = start(AdbCommands.wakeup(device_info))
+    read(popen)
+    kill(popen)
+
+
+# 디바이스 unlock
+def unlock(device_info: DeviceInfo):
+    popen = start(AdbCommands.unlock(device_info))
+    read(popen)
     kill(popen)

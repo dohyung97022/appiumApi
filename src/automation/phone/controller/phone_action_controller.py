@@ -1,6 +1,6 @@
 from flask import request
 
-from src.automation.phone.model.GetPhoneActionsReq import GetPhoneActionsReq
+from src.automation.phone.model.get_phone_actions_req import GetPhoneActionsReq
 from src.automation.phone.service import phone_action_service
 from src.flask_socket_io.domain.flask_socket_io import app
 from src.flask_socket_io.domain.response_entity import ResponseEntity
